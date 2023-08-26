@@ -23,6 +23,10 @@ export class AdminEntity {
   password: string;
   @PrimaryGeneratedColumn()
   personalIdentificationNumberID: number;
+  @Column({ nullable: true })
+  phone: number;
+  @Column({ nullable: true })
+  filename: string;
 
   @OneToOne(
     () => PersonalIdentificationNumberEntity,
@@ -39,12 +43,17 @@ export class AdminEntity {
 export class ProductEntity {
   @PrimaryGeneratedColumn()
   productID: number;
-  @Column()
+  @Column({nullable:true})
   adminID: number;
   @Column()
   name: string;
   @Column({ nullable: true })
   code: string;
+  @Column({ nullable: true })
+  description:string;
+  @Column({ nullable: true })
+  category: string ;
+
 
   @ManyToOne(() => AdminEntity, (admin) => admin.products)
   admin: AdminEntity;

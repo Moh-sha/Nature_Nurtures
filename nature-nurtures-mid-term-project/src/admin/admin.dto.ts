@@ -14,6 +14,7 @@ export class AdminDTO {
   email: string;
   @IsString()
   password: string;
+
 }
 export class SignDTO {
   @IsString()
@@ -25,6 +26,8 @@ export class SignDTO {
   @IsString()
   @IsNotEmpty({ message: 'Review should not be empty.' })
   password: string;
+  phone: number;
+  filename : string;
 }
 export class BlogDto {
   @IsNotEmpty({ message: 'Name should not be empty.' })
@@ -50,6 +53,10 @@ export class ProductDTO {
   name: string;
   @IsString()
   code: string;
+  @IsString()
+  description:string;
+  @IsString()
+  category: string ;
 }
 
 export class NID_DTO {

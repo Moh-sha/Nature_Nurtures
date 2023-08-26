@@ -34,6 +34,10 @@ export class AdminService {
     return this.adminrep.find();
   }
 
+  async GetBlogPost(): Promise<BlogPost[]> {
+    return this.blogpost.find();
+  }
+
   async getIndex(): Promise<AdminEntity[]> {
     return this.adminRepo.find();
   }
@@ -47,10 +51,10 @@ export class AdminService {
   }
 
   //product add
-  async admincrud(data: ProductDTO, adminemail): Promise<ProductEntity> {
-    const admin = await this.adminRepo.findOneBy({ email: adminemail });
-    data.adminID = admin.adminID;
-    data.AdminEmail = adminemail;
+  async admincrud(data: ProductDTO): Promise<ProductEntity> {
+    //const admin = await this.adminRepo.findOneBy({ email: adminemail });
+    //data.adminID = admin.adminID;
+    //data.AdminEmail = adminemail;
     return this.adminrep.save(data);
   }
 
@@ -87,15 +91,23 @@ export class AdminService {
 
     return this.adminrep.save(admincrud);
   }
-  //admin delte
-  async adminDelete(id: number): Promise<void> {
-    await this.adminRepo.delete(id);
-    console.log('Sucess');
+  //admin delete
+  async adminDelete(adminID: number): Promise<void> {
+    try {
+      await this.adminRepo.delete(adminID);
+      console.log('success');
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
-  async productdelete(id: number): Promise<void> {
-    await this.adminrep.delete(id);
-    console.log('sucess');
+  async productdelete(productID: number): Promise<void> {
+    try {
+      await this.adminrep.delete(productID);
+      console.log('sucess');
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
   async Blogpost(data: any): Promise<BlogPost> {

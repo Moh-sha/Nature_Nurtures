@@ -36,6 +36,11 @@ export class AdminController {
   getadmincrud(): any {
     return this.adminservice.getadmincrud();
   }
+  //blog post show
+  @Get('/Blog')
+  GetBlogPost() {
+    return this.adminservice.GetBlogPost();
+  }
   //done normal
   @Get('/getIndex')
   getIndex(): any {
@@ -56,7 +61,7 @@ export class AdminController {
       });
     }
   }
-  //admincrudSearch
+  //admincrudSearch //product search
 
   @Get('/admincrudsearch')
   async admincrudSearch(
@@ -84,7 +89,7 @@ export class AdminController {
   ///add admin database Done
   @Post('/addadmin')
   @UsePipes(new ValidationPipe())
-  @UseGuards(SessionGuard)
+  //@UseGuards(SessionGuard)
   async addadmin(
     @Body() data: AdminDTO,
     @Session() session,
@@ -108,11 +113,11 @@ export class AdminController {
   // @UseGuards(SessionGuard)
   async admincrud(
     @Body() data: ProductDTO,
-    @Session() session,
+    //@Session() session,
   ): Promise<ProductEntity> {
-    console.log(session.email);
-    const adminemail = session.email;
-    const res = await this.adminservice.admincrud(data, adminemail);
+   //  console.log(session.email);
+    //const adminemail = session.email;
+    const res = await this.adminservice.admincrud(data);
 
     if (res !== null) {
       return res;
@@ -150,20 +155,19 @@ export class AdminController {
 
   //delete admin
 
-  @Get('/adminDelete/:id')
-  adminDelete(@Param() id: any, @Session() session): any {
-    console.log(session.email);
+  @Delete('/adminDelete/:adminID')
+  adminDelete(@Param() adminID: any): any {
+    // console.log(session.email);
 
-    return this.adminservice.adminDelete(id);
+    return this.adminservice.adminDelete(adminID);
   }
 
   //delete Product
 
-  @Get('/productDelete/:id')
-  @UseGuards(SessionGuard)
-  productdelete(@Param('id') id: any, @Session() session) {
-    console.log(session.email);
-    return this.adminservice.productdelete(id);
+  @Delete('/productDelete/:productID')
+  //@UseGuards(SessionGuard)
+  productdelete(@Param() productID: any): any {
+    return this.adminservice.productdelete(productID);
   }
 
   //file Upload
@@ -223,9 +227,31 @@ export class AdminController {
   }
 
   @Post('/signup')
+  @UseInterceptors(
+    FileInterceptor('image', {
+      fileFilter: (req, file, cb) => {
+        if (file.originalname.match(/^.*\.(jpg|webp|png|jpeg)$/))
+          cb(null, true);
+        else {
+          cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'image'), false);
+        }
+      },
+      limits: { fileSize: 3000000 },
+      storage: diskStorage({
+        destination: './uploads',
+        filename: function (req, file, cb) {
+          cb(null, Date.now() + file.originalname);
+        },
+      }),
+    }),
+  )
   @UsePipes(new ValidationPipe())
-  signup(@Body() data: SignDTO) {
+  signup(@Body() data: SignDTO, @UploadedFile() imageobj: Express.Multer.File) {
     console.log(data);
+
+    console.log(imageobj.filename);
+    data.filename = imageobj.filename;
+    console.log(data.filename)
     return this.adminservice.signup(data);
   }
 
@@ -269,7 +295,7 @@ export class AdminController {
     console.log(mydata);
     console.log(imageobj.filename);
     mydata.filenames = imageobj.filename;
-    return this.adminservice.signup(mydata);
+   // return this.adminservice.signup(data);
   }
   @Post('/sendemail')
   sendEmail(@Body() mydata: object) {
