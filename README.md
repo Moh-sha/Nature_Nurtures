@@ -1,7 +1,7 @@
 
 # Nature_Nurtures
 
-Project Domain: Tree Plantation ,This is nestjs project . I have used nestjs and postgresql ,postman api .I have use relational database ,crud ,session ,session guard ,transmission ,validation ,mailer,exception handling,nestjs architecture ,typerorm,fileupload,typescript
+Project Domain: Tree Plantation ,This is nestjs project . I have used nestjs and nextjs postgresql ,postman api .I have use relational database ,crud ,session ,session guard ,transmission ,validation ,mailer,exception handling,nestjs architecture ,typerorm,fileupload,typescript
 
 
 ## API Reference
