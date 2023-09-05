@@ -33,21 +33,25 @@ export class AdminController {
   constructor(public readonly adminservice: AdminService) {}
   //done crud
   @Get('/getadmincrud')
+  //@UseGuards(SessionGuard)
   getadmincrud(): any {
     return this.adminservice.getadmincrud();
   }
   //blog post show
   @Get('/Blog')
+  //@UseGuards(SessionGuard)
   GetBlogPost() {
     return this.adminservice.GetBlogPost();
   }
   //done normal
   @Get('/getIndex')
+  //@UseGuards(SessionGuard)
   getIndex(): any {
     return this.adminservice.getIndex();
   }
   // search done
   @Get('/search/:id')
+  //@UseGuards(SessionGuard)
   async getAdminbyID(@Param('id', ParseIntPipe) id: any): Promise<AdminEntity> {
     const res = await this.adminservice.getAdminbyID(id);
 
@@ -63,7 +67,9 @@ export class AdminController {
   }
   //admincrudSearch //product search
 
-  @Get('/admincrudsearch')
+  @Get('/admincrudsearch/:id')
+  //@UseGuards(SessionGuard)
+  @UsePipes(new ValidationPipe())
   async admincrudSearch(
     @Query() qury: any,
     @Session() session,
@@ -110,13 +116,13 @@ export class AdminController {
   //product add
   @Post('/admincrud')
   @UsePipes(new ValidationPipe())
-  // @UseGuards(SessionGuard)
+  //@UseGuards(SessionGuard)
   async admincrud(
     @Body() data: ProductDTO,
-    //@Session() session,
+    @Session() session,
   ): Promise<ProductEntity> {
-   //  console.log(session.email);
-    //const adminemail = session.email;
+    console.log(session.email);
+    const adminemail = session.email;
     const res = await this.adminservice.admincrud(data);
 
     if (res !== null) {
@@ -129,33 +135,60 @@ export class AdminController {
     }
   }
   //update admin
-  @Put('/adminUpdate')
-  @UseGuards(SessionGuard)
-  updateAdmin(@Query() query, @Session() session): object {
-    console.log(session.email);
-    return this.adminservice.updateAdmin(query);
+//  @Put('/adminUpdate')
+  //@UseGuards(SessionGuard)
+  //updateAdmin(@Query() query, @Session() session): object {
+    //console.log(session.email);
+    //return this.adminservice.updateAdmin(query);
+  //}
+//work maybe 
+  @Put('/adminUpdate/:adminID')
+  //@UseGuards(SessionGuard)
+  updateAdmin(@Param() adminID :number ,@Body() data : AdminDTO): object {
+    
+
+    return this.adminservice.updateAdmin(adminID ,data);
   }
+
+
+
+
+
+
+
+
   //session check
   @Post('/sessionCheck')
-  @UseGuards(SessionGuard)
+  //@UseGuards(SessionGuard)
   sessioncheck(@Session() session): any {
     console.log(session.email);
     console.log(session.password);
     return 'sucess';
   }
 
-  //update crud
-  @Put('/adminCrudUpdate')
-  @UseGuards(SessionGuard)
-  updateCrud(@Query() qury, @Session() session): object {
-    console.log(session.email);
+  //update crud//work 
+  @Put('/adminCrudUpdate/:productID')
+  //@UseGuards(SessionGuard)
+  updateAdminById(@Param() productID :number ,@Body() data : ProductDTO): object {
+    
 
-    return this.adminservice.updateCrud(qury);
+    return this.adminservice.updateAdminById(productID ,data);
+  }
+
+
+ 
+
+  //sir code
+  @Put('/updateproduct/:id')
+  @UsePipes(new ValidationPipe())
+  updateAdminbyID(@Param() id: number, @Body() data: ProductDTO): object {
+    return this.adminservice.updateAdminById(id, data);
   }
 
   //delete admin
 
   @Delete('/adminDelete/:adminID')
+  //@UseGuards(SessionGuard)
   adminDelete(@Param() adminID: any): any {
     // console.log(session.email);
 
@@ -166,6 +199,7 @@ export class AdminController {
 
   @Delete('/productDelete/:productID')
   //@UseGuards(SessionGuard)
+  
   productdelete(@Param() productID: any): any {
     return this.adminservice.productdelete(productID);
   }
@@ -180,6 +214,7 @@ export class AdminController {
   //}
 
   @Post('/blogpost')
+  //@UseGuards(SessionGuard)
   Blogpost(@Body() data: BlogDto) {
     return this.adminservice.Blogpost(data);
   }
@@ -251,18 +286,19 @@ export class AdminController {
 
     console.log(imageobj.filename);
     data.filename = imageobj.filename;
-    console.log(data.filename)
+    console.log(data.filename);
     return this.adminservice.signup(data);
   }
 
   @Post('/signin')
   @UsePipes(new ValidationPipe())
-  adminlogin(@Body() data: Admin_login_Dto, @Session() session) {
+  signIn(@Body() data: Admin_login_Dto, @Session() session) {
     const result = this.adminservice.adminlogin(data);
     if (result) {
       session.email = data.email;
-      // session.adminID=data.adminID;
+      console.log(session.email);
     }
+
     return result;
   }
 
@@ -295,7 +331,7 @@ export class AdminController {
     console.log(mydata);
     console.log(imageobj.filename);
     mydata.filenames = imageobj.filename;
-   // return this.adminservice.signup(data);
+    // return this.adminservice.signup(data);
   }
   @Post('/sendemail')
   sendEmail(@Body() mydata: object) {

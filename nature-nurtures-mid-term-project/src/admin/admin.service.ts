@@ -71,25 +71,39 @@ export class AdminService {
     //return this.repo.findOneBy({ id: id });
   }
 
-  async updateAdmin(query) {
-    const id = query.id;
-    const name = query.name;
-    const admin = await this.adminRepo.findOneBy({ adminID: id });
-    admin.name = name;
+  // async updateAdmin(query) {
+  // const id = query.id;
+  //const name = query.name;
+  //const admin = await this.adminRepo.findOneBy({ adminID: id });
+  //admin.name = name;
 
-    return this.adminRepo.save(admin);
+  //return this.adminRepo.save(admin);
+  //}
+
+  //admin work update
+  async updateAdmin(adminID: number , data: AdminDTO): Promise<AdminEntity> {
+    await this.adminRepo.update(adminID, data);
+    return this.adminRepo.findOneBy({ adminID });
   }
-
+  //product Update
   async updateCrud(qury) {
     const id = qury.id;
-    const name = qury.name;
-    const password = qury.password;
+    const Name = qury.name;
+    const Code = qury.Code;
     const admincrud = await this.adminrep.findOneBy({ productID: id });
-
-    admincrud.name = name;
-    admincrud.code = password;
+    admincrud.name = Name;
+    admincrud.code = Code;
 
     return this.adminrep.save(admincrud);
+  }
+
+  //sir update//work
+  async updateAdminById(
+    productID: number,
+    data: ProductDTO,
+  ): Promise<ProductEntity> {
+    await this.adminrep.update(productID, data);
+    return this.adminrep.findOneBy({ productID });
   }
   //admin delete
   async adminDelete(adminID: number): Promise<void> {
@@ -126,16 +140,21 @@ export class AdminService {
   }
 
   async adminlogin(data: Admin_login_Dto): Promise<boolean> {
-    const admindata: AdminDTO = await this.adminRepo.findOneBy({
+    console.log('data' + { data });
+    const userdata: Admin_login_Dto = await this.adminRepo.findOneBy({
       email: data.email,
     });
-    const match: boolean = await bcrypt.compare(
-      data.password,
-      admindata.password,
-    );
-    return match;
+    console.log(userdata);
+    if (userdata != null) {
+      const match: boolean = await bcrypt.compare(
+        data.password,
+        userdata.password,
+      );
+      return match;
+    } else {
+      return false;
+    }
   }
-
   async sendEmail(mydata) {
     await this.mailerService.sendMail({
       to: mydata.email,

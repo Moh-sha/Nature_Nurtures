@@ -7,6 +7,8 @@ import {
 } from 'class-validator';
 
 export class AdminDTO {
+  
+  adminID : number;
   @IsString({ message: 'Invalid name !' })
   @Matches(/^[a-zA-Z]+$/, { message: 'enter a proper name' })
   name: string;
